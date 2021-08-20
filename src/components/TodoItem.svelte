@@ -1,11 +1,29 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
+    import { createEventDispatcher, onMount } from 'svelte';
+    import { tweened, spring } from 'svelte/motion';
+    import { cubicIn } from 'svelte/easing';
+    import { interpolateLab } from 'd3-interpolate';
     export let title;
     export let done;
-
+    let container;
     const dispatch = createEventDispatcher();
+    const doneMotion = tweened('#D24A31', {
+        delay: 0,
+        duration: 250,
+        easing: cubicIn,
+        interpolate: interpolateLab
+    });
+
+    const containerPosition = spring({
+        left: -100,
+        top: -100
+    }, {
+        stiffness: 0.1,
+        damping: 0.1
+    });
 
     function handleDoneChange(event) {
+        doneMotion.set(event.target.checked ?'#333': '#D24A31');
         dispatch('doneChange', event.target.checked);
     }
 
@@ -17,18 +35,34 @@
         dispatch('remove');
     }
 
-</script>
+    onMount(() => {
+        doneMotion.set(done ?'#333': '#D24A31');
+        containerPosition.set({
+            left: container.offsetLeft + 441,
+            top: container.offsetTop + 50 
+        });
+    });
 
-<div class="main-container">
-    <label class="checkbox-container">
-        <input type="checkbox" checked={done} on:input={handleDoneChange} />
-        <span class="checkmark"></span>
-    </label>
-    <input type="text" class="title" class:done value={title} on:input={handleTextChange}/>
-    <p class="remove-btn" on:click={handleRemoveClick}>Remove</p>
+</script>
+<div class="outer-container">
+    <div class="main-container" style="border: 2px solid {$doneMotion}; left: {$containerPosition.left}px; top: {$containerPosition.top}px;" bind:this={container}>
+        <label class="checkbox-container">
+            <input type="checkbox" checked={done} on:input={handleDoneChange} />
+            <span class="checkmark"></span>
+        </label>
+        <input type="text" class="title" class:done value={title} on:input={handleTextChange}/>
+        <p class="remove-btn" on:click={handleRemoveClick}>Remove</p>
+    </div> 
 </div>
 
+
 <style>
+    .outer-container {
+        width: 600px;
+        position: relative;
+        height: 50px;
+        margin-top: 10px;
+    }
     .main-container {
         margin: 0 auto;
         width: 600px;
@@ -40,6 +74,7 @@
         color: #fff;
         margin-bottom: 10px;
         padding: 0 12px;
+        position: absolute;
     }
 
     .checkbox-container {
