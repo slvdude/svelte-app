@@ -61,15 +61,17 @@
 
 	onMount(async () => {
 		$todoItems = await TodoApi.getAll();
+		//await TodoApi.getAll();
 	});
 </script>
 
 <h1>Todo app</h1>
-<AddTodoItem on:add={handleAddClick} />
-
 <div class="counter">
 	{$todoItems.filter(item => item.done).length}/{$todoItems.length}
 </div>
+<AddTodoItem on:add={handleAddClick} />
+
+
 
 {#each $todoItems as {id, text, done} (id)}
     <TodoItem bind:title = {text} {done} on:doneChange={event => handleDoneChange(id, event.detail)} on:textChange={event => handleTextChange(id, event.detail)} on:remove={handleRemoveClick(id)}/>
@@ -116,4 +118,5 @@
 		font-size: 30px;
 		font-weight: bold;
 	}
+
 </style>

@@ -12,7 +12,6 @@
         dispatch('add', text);
         text = '';
     }
-
 </script>
 <div class="main-container">
     <label class="custom-field">

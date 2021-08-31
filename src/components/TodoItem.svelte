@@ -39,11 +39,11 @@
         doneMotion.set(done ?'#333': '#D24A31');
         containerPosition.set({
             left: container.offsetLeft + 441,
-            top: container.offsetTop + 50 
+            top: container.offsetTop + 100 
         });
     });
-
 </script>
+
 <div class="outer-container">
     <div class="main-container" style="border: 2px solid {$doneMotion}; left: {$containerPosition.left}px; top: {$containerPosition.top}px;" bind:this={container}>
         <label class="checkbox-container">
@@ -54,7 +54,6 @@
         <p class="remove-btn" on:click={handleRemoveClick}>Remove</p>
     </div> 
 </div>
-
 
 <style>
     .outer-container {
